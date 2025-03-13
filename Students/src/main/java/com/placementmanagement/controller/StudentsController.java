@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/students")
 public class StudentsController {
 
@@ -36,6 +37,9 @@ public class StudentsController {
             return new ResponseEntity<>("An error occurred while registering the user.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    
+    
 
     
     @PostMapping("/login")
@@ -56,34 +60,11 @@ public class StudentsController {
     }
 
 
-    // Get list of all users (for admin purposes)
-//    @GetMapping("/listAll")
-//    public ResponseEntity<List<Students>> getAllStudents() {
-//        try {
-//            List<Students> users = studentsService.listAll();
-//            return new ResponseEntity<>(users, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @GetMapping("/students") 
     public List<Students> listAll()  
     { 
         return studentsService.listAll(); 
     } 
-
-    // Get user by ID
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Students> getStudentById(@PathVariable Integer id) {
-//        try {
-//            Students student = studentsService.getStudentById(id);
-//            return new ResponseEntity<Students>(student, HttpStatus.OK);
-//        } catch (StudentsException e) {
-//            return new ResponseEntity<Students>(HttpStatus.NOT_FOUND);
-//        } catch (Exception e) {
-//            return new ResponseEntity<Students>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     // Get user by email
     @GetMapping("/email/{email}")
