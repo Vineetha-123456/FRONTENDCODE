@@ -2,7 +2,7 @@ import "./SignUp.css";
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-
+ 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -14,9 +14,9 @@ const SignUp = () => {
   const [newskill, setNewskill] = useState(""); // Holds the skill being typed
   const [cgpa, setCgpa] = useState("");
   const [stream, setStream] = useState("");
-
+ 
   const navigate = useNavigate(); // Initialize useNavigate hook
-
+ 
   // Handle adding a skill to the skills array
   const handleAddSkills = () => {
     if (newskill.trim() !== "") {
@@ -25,7 +25,7 @@ const SignUp = () => {
       setNewskill(""); // Clear the input after adding
     }
   };
-
+ 
   const newStudent = {
     username,
     email,
@@ -37,42 +37,43 @@ const SignUp = () => {
     cgpa,
     stream
   };
-
-  const handleSubmit = async event => {
+ 
+  const handleSubmit = async (event) => {
     event.preventDefault();
+ 
+    // Prepare the data as a JSON object (instead of FormData)
+    const data = {
+      username: username,
+      email: email,
+      password: password,
+      rollNo: rollNo,
+      contactNo: contactNo,
+      batch: batch,
+      skills: skills.join(","), // Send skills array as a comma-separated string
+      cgpa: cgpa,
+      stream: stream,
+    };
+ 
     try {
-      const formData = new FormData();
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
-      formData.append("rollNo", rollNo);
-      formData.append("contactNo", contactNo);
-      formData.append("batch", batch);
-      formData.append("skills", skills.join(",")); // Send skills array as a comma-separated string
-      formData.append("cgpa", cgpa);
-      formData.append("stream", stream);
-
-      // Navigate immediately after the form submission to the Login page
-      navigate("/Login");
-
       // API call to server for sign-up
       const response = await axios.post(
         "http://localhost:8087/placement-system/api/students/signup",
-        formData,
+        data, // Send the data as JSON
         {
           headers: {
-            "Content-Type": "multipart/form-data"
-          }
+            "Content-Type": "application/json", // Ensure we set the right Content-Type for JSON
+          },
         }
       );
-
+ 
       // If the response status is 201, the account was created successfully
       if (response.status === 201) {
         alert("Account created successfully");
+        navigate("/Login"); // Navigate immediately after successful sign-up
       }
-
+ 
       console.log(response.data);
-
+ 
       // Reset form fields
       setUsername("");
       setEmail("");
@@ -85,14 +86,16 @@ const SignUp = () => {
       setStream("");
     } catch (error) {
       console.log(error);
-      console.log(newStudent);
+      if (error.response) {
+        console.log("Error response:", error.response.data);
+        console.log("Error status:", error.response.status);
+      }
     }
   };
-  
-
-
-
-
+ 
+ 
+ 
+ 
   return (
     <div className="login">
       <div className="login-child" />
@@ -108,7 +111,7 @@ const SignUp = () => {
           <span className="e">.</span>
         </span>
       </b>
-
+ 
       <b className="home">
         <a href="/">Home</a>
       </b>
@@ -129,7 +132,7 @@ const SignUp = () => {
           <div className="please-enter-your">
             Please enter your credentials!
           </div>
-
+ 
           <form className="signup-form" onSubmit={handleSubmit}>
             <label className="form-label1">
               Username:
@@ -195,7 +198,7 @@ const SignUp = () => {
                 onChange={event => setBatch(event.target.value)}
               />
             </label>
-
+ 
             {/* Skills Input Field */}
             <label className="form-label1">
               Skills:
@@ -210,7 +213,7 @@ const SignUp = () => {
                 Add Skills
               </button>
             </label>
-
+ 
             {/* Display added skills */}
             <div className="skills-display">
               <p>Added Skills:</p>
@@ -222,7 +225,7 @@ const SignUp = () => {
                 )}
               </ul>
             </div>
-
+ 
             <label className="form-label1">
               CGPA:
               <input
@@ -243,12 +246,12 @@ const SignUp = () => {
                 onChange={event => setStream(event.target.value)}
               />
             </label>
-
+ 
             <button className="form-button1" type="submit">
               SignUp
             </button>
           </form>
-
+ 
           <div className="not-registered-register-container">
             <span>{`Already have an account? `}</span>
             <b className="register">
@@ -260,5 +263,6 @@ const SignUp = () => {
     </div>
   );
 };
-
+ 
 export default SignUp;
+ 
