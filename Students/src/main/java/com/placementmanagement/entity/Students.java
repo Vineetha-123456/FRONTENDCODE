@@ -10,7 +10,7 @@ public class Students
 {
 
 	    @Id
-//        @GeneratedValue(strategy = GenerationType.IDENTITY)
+       @GeneratedValue(strategy = GenerationType.IDENTITY)
 	    
 	    private Long id;
 	    private String status; // "placed" or "unplaced"
